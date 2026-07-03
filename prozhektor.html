@@ -392,10 +392,9 @@
     .hero-stats--inline{display:none;}
     .stats-band{display:block;background:var(--graphite-900);padding:30px var(--pad) 34px;}
 
-    /* mob_main.jpg is pre-cropped portrait with the buildings up top and a
-       built-in fade to black lower down — anchor to the top so that framing
-       is preserved instead of being center-cropped */
-    .hero-media img{object-position:center top;}
+    /* let the copy block sit closer to the bottom edge, opening up more of
+       the photo above it, without touching how the image itself is cropped */
+    .hero-content{padding-bottom:16px;}
   }
   @media (max-width: 480px){
     .ps-col h2{white-space:normal;}
