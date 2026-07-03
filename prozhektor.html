@@ -361,8 +361,10 @@
     .nav-actions{gap:12px;}
   }
   @media (max-width: 760px){
-    .hero-stats{grid-template-columns:1fr 1fr;}
-    .hero-stat:nth-child(n+3){border-top:1px solid rgba(255,255,255,0.14);}
+    /* two-column stat grid on mobile: give the row divider real breathing
+       room on both sides instead of the number sitting flush against it */
+    .hero-stats{grid-template-columns:1fr 1fr;row-gap:26px;column-gap:20px;}
+    .hero-stat:nth-child(n+3){border-top:1px solid rgba(255,255,255,0.14);padding-top:20px;}
     .field-row{grid-template-columns:1fr;}
     .footer-cols{gap:44px;}
 
