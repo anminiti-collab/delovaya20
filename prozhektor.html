@@ -150,6 +150,7 @@
   .hero h1{font-weight:700;font-size:clamp(29px, min(4.17vw, 6.2vh), 59.5px);line-height:1.1;letter-spacing:-0.015em;margin-bottom:clamp(16px,2.6vh,26px);}
   .hero .lead{margin:0 0 clamp(16px,3vh,32px);font-size:clamp(13px, min(1.1vw, 1.9vh), 17px);line-height:1.55;color:rgba(255,255,255,0.72);max-width:640px;font-weight:400;}
   @media (max-width: 700px){ .lead-break{display:none;} }
+  @media (max-width: 560px){ .h1-break{display:none;} }
   .hero-ctas{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-bottom:clamp(28px,6vh,72px);}
   .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(18px,3.45vw,46px);border-top:1px solid rgba(255,255,255,0.2);padding-top:clamp(18px,3.45vh,32px);}
   .hero-stat{display:flex;flex-direction:column;gap:7px;}
@@ -380,6 +381,16 @@
     .hero-ctas{flex-direction:column;align-items:stretch;}
     .client-bar{flex-direction:column;align-items:stretch;}
     .btn-lg, .btn-md{width:100%;}
+
+    /* the hero carries a lot of stacked content on short mobile viewports
+       (tag, heading, lead, two buttons, stats) — tighten the rhythm so the
+       stats row reliably stays within the first screen instead of spilling over */
+    .hero-tags{margin-bottom:14px;}
+    .hero h1{margin-bottom:12px;}
+    .hero .lead{margin-bottom:18px;}
+    .hero-ctas{gap:10px;margin-bottom:20px;}
+    .hero-stats{padding-top:14px;gap:12px 18px;}
+    .hero-stat{gap:3px;}
   }
   @media (max-width: 480px){
     .ps-col h2{white-space:normal;}
@@ -442,7 +453,7 @@
       <div class="hero-content">
         <div class="hero-copy">
           <div class="hero-tags reveal"><span class="hero-tag-dot"></span>Внутри МКАД · 7 мин на авто до метро Кантемировская</div>
-          <h1 class="reveal">Производство и офис<br>внутри Москвы, а&nbsp;не&nbsp;за&nbsp;МКАД</h1>
+          <h1 class="reveal">Производство и офис<br class="h1-break">внутри Москвы, а&nbsp;не&nbsp;за&nbsp;МКАД</h1>
           <p class="lead reveal">Мультифункциональный городской индустриальный центр для малого<br class="lead-break">и среднего бизнеса. Метро и главные транспортные артерии рядом.</p>
           <div class="hero-ctas reveal">
             <a href="#a-form" class="btn btn-accent btn-lg">Оставить заявку</a>
@@ -814,5 +825,3 @@
 </script>
 </body>
 </html>
-
-<!-- redeploy trigger -->
