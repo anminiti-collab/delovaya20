@@ -391,6 +391,11 @@
     .hero-ctas{gap:12px;}
     .hero-stats--inline{display:none;}
     .stats-band{display:block;background:var(--graphite-900);padding:30px var(--pad) 34px;}
+
+    /* mob_main.jpg is pre-cropped portrait with the buildings up top and a
+       built-in fade to black lower down — anchor to the top so that framing
+       is preserved instead of being center-cropped */
+    .hero-media img{object-position:center top;}
   }
   @media (max-width: 480px){
     .ps-col h2{white-space:normal;}
@@ -447,13 +452,18 @@
 
   <!-- HERO (variant A) -->
   <div class="hero">
-    <div class="hero-media"><img src="img/main.jpg" alt="Комплекс Деловая20 ночью, вид сверху" fetchpriority="high"></div>
+    <div class="hero-media">
+      <picture>
+        <source media="(max-width: 760px)" srcset="img/mob_main.jpg">
+        <img src="img/main.jpg" alt="Комплекс Деловая20 ночью, вид сверху" fetchpriority="high">
+      </picture>
+    </div>
     <div class="hero-scrim"></div>
     <div class="hero-inner">
       <div class="hero-content">
         <div class="hero-copy">
           <div class="hero-tags reveal"><span class="hero-tag-dot"></span>Внутри МКАД · 7 мин на авто до метро Кантемировская</div>
-          <h1 class="reveal">Производство и офис <br class="h1-break">внутри Москвы, а&nbsp;не&nbsp;за&nbsp;МКАД</h1>
+          <h1 class="reveal">Производство и офис <br class="h1-break">внутри Москвы, а&nbsp;не&nbsp;за МКАД</h1>
           <p class="lead reveal">Мультифункциональный городской индустриальный центр для малого<br class="lead-break">и среднего бизнеса. Метро и главные транспортные артерии рядом.</p>
           <div class="hero-ctas reveal">
             <a href="#a-form" class="btn btn-accent btn-lg">Оставить заявку</a>
