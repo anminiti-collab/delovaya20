@@ -156,6 +156,7 @@
   .hero-stat{display:flex;flex-direction:column;gap:7px;}
   .hero-stat-num{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(17px, min(1.96vw, 2.65vh), 30px);}
   .hero-stat-label{font-size:clamp(11.5px, min(0.98vw, 1.5vh), 14.5px);color:rgba(255,255,255,0.6);}
+  .stats-band{display:none;}
 
   /* ---------- secondary ticker: full-bleed running marquee ---------- */
   .ticker{position:relative;overflow:hidden;background:var(--mist);padding:clamp(24px,2.6vw,34px) 0;}
@@ -382,15 +383,12 @@
     .client-bar{flex-direction:column;align-items:stretch;}
     .btn-lg, .btn-md{width:100%;}
 
-    /* the hero carries a lot of stacked content on short mobile viewports
-       (tag, heading, lead, two buttons, stats) — tighten the rhythm so the
-       stats row reliably stays within the first screen instead of spilling over */
-    .hero-tags{margin-bottom:14px;}
-    .hero h1{margin-bottom:12px;}
-    .hero .lead{margin-bottom:18px;}
-    .hero-ctas{gap:10px;margin-bottom:20px;}
-    .hero-stats{padding-top:14px;gap:12px 18px;}
-    .hero-stat{gap:3px;}
+    /* the hero on mobile now only holds tag + heading + lead + 2 buttons —
+       stats move to their own dark band right below it (see .stats-band),
+       so the hero keeps normal, uncrowded spacing instead of being tightened */
+    .hero-ctas{gap:12px;}
+    .hero-stats--inline{display:none;}
+    .stats-band{display:block;background:var(--graphite-900);padding:30px var(--pad) 34px;}
   }
   @media (max-width: 480px){
     .ps-col h2{white-space:normal;}
@@ -453,20 +451,31 @@
       <div class="hero-content">
         <div class="hero-copy">
           <div class="hero-tags reveal"><span class="hero-tag-dot"></span>Внутри МКАД · 7 мин на авто до метро Кантемировская</div>
-          <h1 class="reveal">Производство и офис<br class="h1-break">внутри Москвы, а&nbsp;не&nbsp;за&nbsp;МКАД</h1>
+          <h1 class="reveal">Производство и офис <br class="h1-break">внутри Москвы, а&nbsp;не&nbsp;за&nbsp;МКАД</h1>
           <p class="lead reveal">Мультифункциональный городской индустриальный центр для малого<br class="lead-break">и среднего бизнеса. Метро и главные транспортные артерии рядом.</p>
           <div class="hero-ctas reveal">
             <a href="#a-form" class="btn btn-accent btn-lg">Оставить заявку</a>
             <a href="#a-specs" class="btn btn-ghost-dark btn-lg">Смотреть характеристики</a>
           </div>
         </div>
-        <div class="hero-stats reveal-stagger reveal">
+        <div class="hero-stats hero-stats--inline reveal-stagger reveal">
           <div class="hero-stat"><span class="hero-stat-num">50 280 м²</span><span class="hero-stat-label">Общая площадь</span></div>
           <div class="hero-stat"><span class="hero-stat-num">3 корпуса</span><span class="hero-stat-label">Единая городская среда</span></div>
           <div class="hero-stat"><span class="hero-stat-num">4 кв. 2027</span><span class="hero-stat-label">Срок сдачи</span></div>
           <div class="hero-stat"><span class="hero-stat-num">8+ млрд ₽</span><span class="hero-stat-label">Объём инвестиций</span></div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- mobile-only: same stats, moved below the hero on dark bg so the hero itself
+       stays to just tag + heading + lead + 2 buttons on small screens -->
+  <div class="stats-band">
+    <div class="hero-stats hero-stats--band">
+      <div class="hero-stat"><span class="hero-stat-num">50 280 м²</span><span class="hero-stat-label">Общая площадь</span></div>
+      <div class="hero-stat"><span class="hero-stat-num">3 корпуса</span><span class="hero-stat-label">Единая городская среда</span></div>
+      <div class="hero-stat"><span class="hero-stat-num">4 кв. 2027</span><span class="hero-stat-label">Срок сдачи</span></div>
+      <div class="hero-stat"><span class="hero-stat-num">8+ млрд ₽</span><span class="hero-stat-label">Объём инвестиций</span></div>
     </div>
   </div>
 
