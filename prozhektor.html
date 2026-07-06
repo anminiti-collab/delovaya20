@@ -178,6 +178,8 @@
   .section-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:32px;margin-bottom:clamp(32px,4vw,52px);}
   .section-head h2{font-weight:600;font-size:clamp(24px,2.6vw,38px);line-height:1.1;letter-spacing:-0.01em;max-width:600px;}
   .section-head p{margin:0;font-size:15.5px;line-height:1.6;color:var(--gray-600);max-width:340px;padding-bottom:4px;}
+  .section-head--stack{flex-direction:column;align-items:flex-start;gap:12px;}
+  .section-head--stack p{max-width:520px;padding-bottom:0;}
 
   /* architecture — clean symmetric composition */
   .arch-hero{position:relative;overflow:hidden;height:clamp(300px,38vw,560px);margin-bottom:16px;background:var(--mist);border-radius:var(--r-lg);}
@@ -229,8 +231,8 @@
   /* progress gallery — asymmetric grid: big current frame + two upcoming
      previews peeking on the right, thin progress line above them */
   .gallery-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:stretch;}
-  .gallery-main{position:relative;overflow:hidden;border-radius:var(--r-lg);background:var(--mist);min-height:460px;}
-  .gallery-main .gallery-slide{position:absolute;inset:0;opacity:0;transition:opacity 650ms var(--ease-out);}
+  .gallery-main{position:relative;overflow:hidden;border-radius:var(--r-lg);background:var(--mist);min-height:460px;cursor:pointer;}
+  .gallery-main .gallery-slide{position:absolute;inset:0;margin:0;opacity:0;transition:opacity 650ms var(--ease-out);}
   .gallery-main .gallery-slide.is-active{opacity:1;}
   .gallery-main .gallery-slide img{width:100%;height:100%;object-fit:cover;display:block;}
   .gallery-side{display:flex;flex-direction:column;gap:16px;height:100%;}
@@ -257,6 +259,38 @@
     .gallery-peek{height:110px;}
     .gallery-arrow{width:38px;height:38px;}
     .gallery-arrow svg{width:14px;height:14px;}
+  }
+
+  /* fullscreen lightbox — opens on click of the main photo or a preview */
+  .lightbox{position:fixed;inset:0;z-index:300;background:rgba(10,10,11,0.95);
+    display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;
+    transition:opacity 280ms ease, visibility 0s linear 280ms;}
+  .lightbox.is-open{opacity:1;visibility:visible;transition:opacity 280ms ease;}
+  .lightbox-stage{max-width:min(1440px,90vw);max-height:88vh;}
+  .lightbox-img{display:block;max-width:100%;max-height:88vh;width:auto;height:auto;
+    object-fit:contain;border-radius:var(--r-md);margin:0;}
+  .lightbox-close{position:absolute;top:22px;right:22px;width:44px;height:44px;border-radius:50%;
+    border:1px solid rgba(255,255,255,0.28);background:rgba(255,255,255,0.06);color:var(--paper);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 200ms ease;}
+  .lightbox-close svg{width:17px;height:17px;}
+  .lightbox-close:hover{background:rgba(255,255,255,0.18);}
+  .lightbox-arrow{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;
+    border:1px solid rgba(255,255,255,0.28);background:rgba(255,255,255,0.06);color:var(--paper);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 200ms ease;}
+  .lightbox-arrow svg{width:19px;height:19px;}
+  .lightbox-arrow:hover{background:rgba(255,255,255,0.18);}
+  .lightbox-prev{left:22px;}
+  .lightbox-next{right:22px;}
+  .lightbox-counter{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);
+    color:rgba(255,255,255,0.65);font-size:13px;letter-spacing:0.02em;font-variant-numeric:tabular-nums;}
+  body.lightbox-open{overflow:hidden;}
+  @media(max-width:760px){
+    .lightbox-close{top:14px;right:14px;width:38px;height:38px;}
+    .lightbox-close svg{width:15px;height:15px;}
+    .lightbox-arrow{width:42px;height:42px;}
+    .lightbox-arrow svg{width:16px;height:16px;}
+    .lightbox-prev{left:10px;}
+    .lightbox-next{right:10px;}
   }
 
   /* location */
@@ -660,8 +694,9 @@
 
   <!-- PROGRESS GALLERY -->
   <section id="a-progress">
-    <div class="section-head reveal" style="margin-bottom:clamp(32px,4vw,52px);">
+    <div class="section-head section-head--stack reveal" style="margin-bottom:clamp(32px,4vw,52px);">
       <h2>Ход работ</h2>
+      <p>Живые фотографии со стройплощадки — обновляем по мере готовности новых очередей.</p>
     </div>
     <div class="gallery reveal" data-gallery>
       <div class="gallery-grid">
@@ -686,11 +721,22 @@
             <div class="gallery-counter"><b class="gallery-counter-current">01</b> / <span class="gallery-counter-total">11</span></div>
           </div>
           <div class="gallery-peek">
-            <button class="gallery-peek-item" type="button" aria-label="Следующее фото"><img src="img/hod-rabot/hod-02.jpg" loading="lazy" alt=""></button>
-            <button class="gallery-peek-item" type="button" aria-label="Фото через одно"><img src="img/hod-rabot/hod-03.jpg" loading="lazy" alt=""></button>
+            <button class="gallery-peek-item" type="button" aria-label="Открыть фото на весь экран"><img src="img/hod-rabot/hod-02.jpg" loading="lazy" alt=""></button>
+            <button class="gallery-peek-item" type="button" aria-label="Открыть фото на весь экран"><img src="img/hod-rabot/hod-03.jpg" loading="lazy" alt=""></button>
           </div>
         </div>
       </div>
+    </div>
+    <!-- lives outside the reveal-animated .gallery wrapper on purpose: that
+         wrapper's transform (even at rest, translateY(0)) creates a new
+         containing block, which would trap this position:fixed overlay
+         inside the section instead of covering the viewport -->
+    <div class="lightbox" data-lightbox aria-hidden="true">
+      <button class="lightbox-close" type="button" aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <button class="lightbox-arrow lightbox-prev" type="button" aria-label="Предыдущее фото"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="lightbox-arrow lightbox-next" type="button" aria-label="Следующее фото"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></button>
+      <div class="lightbox-stage"><img class="lightbox-img" src="" alt=""></div>
+      <div class="lightbox-counter"><span class="lightbox-counter-current">01</span> / <span class="lightbox-counter-total">11</span></div>
     </div>
   </section>
 
@@ -912,6 +958,7 @@
     var index = 0;
     var AUTOPLAY_MS = 5200;
     var timer = null;
+    var didSwipe = false;
 
     function show(i){
       index = (i + total) % total;
@@ -932,14 +979,78 @@
       if(timer){ clearInterval(timer); }
       timer = setInterval(function(){ show(index + 1); }, AUTOPLAY_MS);
     }
-    if(prevBtn){ prevBtn.addEventListener('click', prev); }
-    if(nextBtn){ nextBtn.addEventListener('click', next); }
+    if(prevBtn){ prevBtn.addEventListener('click', function(e){ e.stopPropagation(); prev(); }); }
+    if(nextBtn){ nextBtn.addEventListener('click', function(e){ e.stopPropagation(); next(); }); }
+
+    /* fullscreen lightbox — independent of the small carousel's position */
+    var lightbox = (root.parentElement && root.parentElement.querySelector('[data-lightbox]')) || document.querySelector('[data-lightbox]');
+    var lbImg = lightbox ? lightbox.querySelector('.lightbox-img') : null;
+    var lbCur = lightbox ? lightbox.querySelector('.lightbox-counter-current') : null;
+    var lbClose = lightbox ? lightbox.querySelector('.lightbox-close') : null;
+    var lbPrev = lightbox ? lightbox.querySelector('.lightbox-prev') : null;
+    var lbNext = lightbox ? lightbox.querySelector('.lightbox-next') : null;
+    var lbIndex = 0;
+
+    function openLightbox(i){
+      if(!lightbox){ return; }
+      lbIndex = (i + total) % total;
+      renderLightbox();
+      lightbox.classList.add('is-open');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('lightbox-open');
+      if(timer){ clearInterval(timer); }
+    }
+    function closeLightbox(){
+      if(!lightbox){ return; }
+      lightbox.classList.remove('is-open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('lightbox-open');
+      restart();
+    }
+    function renderLightbox(){
+      if(!lbImg){ return; }
+      lbImg.setAttribute('src', srcs[lbIndex].src);
+      lbImg.setAttribute('alt', srcs[lbIndex].alt);
+      if(lbCur){ lbCur.textContent = String(lbIndex + 1).padStart(2, '0'); }
+    }
+    function lbNextFn(){ lbIndex = (lbIndex + 1) % total; renderLightbox(); }
+    function lbPrevFn(){ lbIndex = (lbIndex - 1 + total) % total; renderLightbox(); }
+
+    if(main){
+      main.addEventListener('click', function(){
+        if(didSwipe){ didSwipe = false; return; }
+        openLightbox(index);
+      });
+    }
     peekItems.forEach(function(el){
       el.addEventListener('click', function(){
         var target = parseInt(el.getAttribute('data-index'), 10);
-        if(!isNaN(target)){ show(target); restart(); }
+        if(!isNaN(target)){ openLightbox(target); }
       });
     });
+    if(lbClose){ lbClose.addEventListener('click', closeLightbox); }
+    if(lbPrev){ lbPrev.addEventListener('click', function(e){ e.stopPropagation(); lbPrevFn(); }); }
+    if(lbNext){ lbNext.addEventListener('click', function(e){ e.stopPropagation(); lbNextFn(); }); }
+    if(lightbox){
+      lightbox.addEventListener('click', function(e){
+        if(e.target === lightbox){ closeLightbox(); }
+      });
+      document.addEventListener('keydown', function(e){
+        if(!lightbox.classList.contains('is-open')){ return; }
+        if(e.key === 'Escape'){ closeLightbox(); }
+        if(e.key === 'ArrowRight'){ lbNextFn(); }
+        if(e.key === 'ArrowLeft'){ lbPrevFn(); }
+      });
+      var lbStartX = null;
+      lightbox.addEventListener('touchstart', function(e){ lbStartX = e.touches[0].clientX; }, {passive:true});
+      lightbox.addEventListener('touchend', function(e){
+        if(lbStartX === null){ return; }
+        var dx = e.changedTouches[0].clientX - lbStartX;
+        if(Math.abs(dx) > 40){ dx < 0 ? lbNextFn() : lbPrevFn(); }
+        lbStartX = null;
+      }, {passive:true});
+    }
+
     root.addEventListener('mouseenter', function(){ if(timer){ clearInterval(timer); } });
     root.addEventListener('mouseleave', restart);
     if(main){
@@ -948,7 +1059,7 @@
       main.addEventListener('touchend', function(e){
         if(startX === null){ return; }
         var dx = e.changedTouches[0].clientX - startX;
-        if(Math.abs(dx) > 40){ dx < 0 ? next() : prev(); }
+        if(Math.abs(dx) > 40){ didSwipe = true; dx < 0 ? next() : prev(); }
         startX = null;
       }, {passive:true});
     }
