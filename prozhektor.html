@@ -74,7 +74,7 @@
   }
 
   /* ---------- nav: solid bar, own row above hero (matches reference) ---------- */
-  #a-arch,#a-specs,#a-location,#a-deal,#a-form{scroll-margin-top:var(--nav-h);}
+  #a-arch,#a-specs,#a-progress,#a-location,#a-deal,#a-form{scroll-margin-top:var(--nav-h);}
   .nav{height:var(--nav-h);position:sticky;top:0;z-index:50;
     background:rgba(255,255,255,0.82);backdrop-filter:blur(18px) saturate(180%);-webkit-backdrop-filter:blur(18px) saturate(180%);
     border-bottom:1px solid rgba(20,20,22,0.06);
@@ -226,6 +226,45 @@
   .ps-col:last-child .n svg{width:15px;height:15px;color:var(--graphite-900);stroke-width:2.4;}
   .ps-col-cta{margin-top:32px;}
 
+  /* progress gallery */
+  .gallery-stage{position:relative;overflow:hidden;border-radius:var(--r-lg);background:var(--graphite-900);
+    aspect-ratio:16/9;}
+  .gallery-track{position:relative;width:100%;height:100%;}
+  .gallery-slide{position:absolute;inset:0;opacity:0;transition:opacity 700ms var(--ease-out);pointer-events:none;}
+  .gallery-slide.is-active{opacity:1;pointer-events:auto;}
+  .gallery-slide img{width:100%;height:100%;object-fit:cover;display:block;}
+  .gallery-cap{position:absolute;left:0;right:0;bottom:0;padding:22px 26px 16px;
+    background:linear-gradient(0deg, rgba(14,15,17,0.72) 0%, rgba(14,15,17,0) 100%);
+    color:var(--paper);font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;}
+  .gallery-counter{position:absolute;top:18px;right:20px;padding:6px 12px;border-radius:100px;
+    background:rgba(14,15,17,0.45);backdrop-filter:blur(6px);color:var(--paper);font-size:12.5px;font-weight:600;
+    letter-spacing:0.03em;font-variant-numeric:tabular-nums;}
+  .gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;
+    border:1px solid rgba(255,255,255,0.32);background:rgba(14,15,17,0.35);backdrop-filter:blur(6px);color:var(--paper);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 200ms ease, transform 200ms var(--ease-out), border-color 200ms ease;}
+  .gallery-arrow svg{width:18px;height:18px;}
+  .gallery-arrow:hover{background:var(--accent);border-color:var(--accent);}
+  .gallery-arrow:active{transform:translateY(-50%) scale(0.92);}
+  .gallery-prev{left:18px;}
+  .gallery-next{right:18px;}
+  .gallery-thumbs{display:flex;gap:10px;margin-top:14px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+  .gallery-thumbs::-webkit-scrollbar{display:none;}
+  .gallery-thumb{position:relative;flex:none;width:104px;height:70px;border-radius:10px;overflow:hidden;
+    border:none;padding:0;cursor:pointer;background:var(--mist);opacity:0.5;transition:opacity 220ms ease;}
+  .gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .gallery-thumb.is-active{opacity:1;}
+  .gallery-thumb:hover{opacity:0.85;}
+  .gallery-thumb-progress{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--accent-light);}
+  @keyframes galleryProgress{from{width:0%;}to{width:100%;}}
+  @media(max-width:760px){
+    .gallery-arrow{width:38px;height:38px;}
+    .gallery-arrow svg{width:15px;height:15px;}
+    .gallery-prev{left:10px;}
+    .gallery-next{right:10px;}
+    .gallery-thumb{width:78px;height:54px;}
+    .gallery-cap{font-size:10.5px;padding:16px 16px 12px;}
+  }
+
   /* location */
   .loc-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;}
   .loc-grid iframe{width:100%;height:clamp(320px,34vw,460px);border:1px solid var(--hair-light);border-radius:var(--r-lg);filter:grayscale(0.25) contrast(1.02);}
@@ -373,8 +412,12 @@
     /* the top bar itself only has room for logo + a compact call icon + burger —
        the tag and full phone number move into the dropdown/footer instead */
     .logo-tag{display:none;}
+    .logo-mark{font-size:18.4px;}
     .nav-phone-text{display:none;}
-    .nav-phone-icon{display:block;}
+    .nav-phone-icon{display:block;width:16px;height:16px;}
+    .nav-phone{width:38px;height:38px;padding:0;margin:0;justify-content:center;border-radius:50%;
+      border:1px solid var(--hair-light);background:var(--mist);}
+    .nav-phone::after{display:none;}
     .nav-cta{font-size:12px;padding:8px 14px;}
 
     /* full-width, stacked CTAs read better as thumb targets on mobile */
@@ -428,6 +471,7 @@
       <nav class="nav-links" id="navLinks">
         <a href="#a-arch">Архитектура</a>
         <a href="#a-specs">Характеристики</a>
+        <a href="#a-progress">Ход работ</a>
         <a href="#a-location">Локация</a>
         <a href="#a-deal">Сделка</a>
         <a href="#a-form" class="btn btn-accent nav-links-cta">Оставить заявку</a>
@@ -620,6 +664,48 @@
     </section>
   </div>
 
+  <!-- PROGRESS GALLERY -->
+  <section id="a-progress">
+    <div class="section-head reveal" style="margin-bottom:clamp(32px,4vw,52px);">
+      <h2>Ход работ</h2>
+      <p>Живые фотографии со стройплощадки — обновляем по мере готовности новых очередей.</p>
+    </div>
+    <div class="gallery reveal" data-gallery>
+      <div class="gallery-stage">
+        <div class="gallery-track">
+          <figure class="gallery-slide is-active"><img src="img/hod-rabot/hod-01.jpg" alt="Ход строительства Деловая20, фото 1" loading="lazy"></figure>
+          <figure class="gallery-slide"><img src="img/hod-rabot/hod-02.jpg" alt="Ход строительства Деловая20, фото 2" loading="lazy"></figure>
+          <figure class="gallery-slide"><img src="img/hod-rabot/hod-03.jpg" alt="Ход строительства Деловая20, фото 3" loading="lazy"></figure>
+          <figure class="gallery-slide"><img src="img/hod-rabot/hod-04.jpg" alt="Ход строительства Деловая20, фото 4" loading="lazy"></figure>
+          <figure class="gallery-slide"><img src="img/hod-rabot/hod-05.jpg" alt="Ход строительства Деловая20, фото 5" loading="lazy"></figure>
+          <figure class="gallery-slide"><img src="img/hod-rabot/hod-06.jpg" alt="Ход строительства Деловая20, фото 6" loading="lazy"></figure>
+          <figure class="gallery-slide"><img src="img/hod-rabot/hod-07.jpg" alt="Ход строительства Деловая20, фото 7" loading="lazy"></figure>
+          <figure class="gallery-slide"><img src="img/hod-rabot/hod-08.jpg" alt="Ход строительства Деловая20, фото 8" loading="lazy"></figure>
+          <figure class="gallery-slide"><img src="img/hod-rabot/hod-09.jpg" alt="Ход строительства Деловая20, фото 9" loading="lazy"></figure>
+          <figure class="gallery-slide"><img src="img/hod-rabot/hod-11.jpg" alt="Ход строительства Деловая20, фото 10" loading="lazy"></figure>
+          <figure class="gallery-slide"><img src="img/hod-rabot/hod-12.jpg" alt="Ход строительства Деловая20, фото 11" loading="lazy"></figure>
+        </div>
+        <div class="gallery-cap">Стройплощадка Деловая20</div>
+        <div class="gallery-counter"><span class="gallery-counter-current">01</span> / <span class="gallery-counter-total">11</span></div>
+        <button class="gallery-arrow gallery-prev" type="button" aria-label="Предыдущее фото"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="gallery-arrow gallery-next" type="button" aria-label="Следующее фото"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="gallery-thumbs">
+        <button class="gallery-thumb is-active" type="button" aria-label="Фото 1"><img src="img/hod-rabot/hod-01.jpg" loading="lazy" alt=""><span class="gallery-thumb-progress"></span></button>
+        <button class="gallery-thumb" type="button" aria-label="Фото 2"><img src="img/hod-rabot/hod-02.jpg" loading="lazy" alt=""><span class="gallery-thumb-progress"></span></button>
+        <button class="gallery-thumb" type="button" aria-label="Фото 3"><img src="img/hod-rabot/hod-03.jpg" loading="lazy" alt=""><span class="gallery-thumb-progress"></span></button>
+        <button class="gallery-thumb" type="button" aria-label="Фото 4"><img src="img/hod-rabot/hod-04.jpg" loading="lazy" alt=""><span class="gallery-thumb-progress"></span></button>
+        <button class="gallery-thumb" type="button" aria-label="Фото 5"><img src="img/hod-rabot/hod-05.jpg" loading="lazy" alt=""><span class="gallery-thumb-progress"></span></button>
+        <button class="gallery-thumb" type="button" aria-label="Фото 6"><img src="img/hod-rabot/hod-06.jpg" loading="lazy" alt=""><span class="gallery-thumb-progress"></span></button>
+        <button class="gallery-thumb" type="button" aria-label="Фото 7"><img src="img/hod-rabot/hod-07.jpg" loading="lazy" alt=""><span class="gallery-thumb-progress"></span></button>
+        <button class="gallery-thumb" type="button" aria-label="Фото 8"><img src="img/hod-rabot/hod-08.jpg" loading="lazy" alt=""><span class="gallery-thumb-progress"></span></button>
+        <button class="gallery-thumb" type="button" aria-label="Фото 9"><img src="img/hod-rabot/hod-09.jpg" loading="lazy" alt=""><span class="gallery-thumb-progress"></span></button>
+        <button class="gallery-thumb" type="button" aria-label="Фото 10"><img src="img/hod-rabot/hod-11.jpg" loading="lazy" alt=""><span class="gallery-thumb-progress"></span></button>
+        <button class="gallery-thumb" type="button" aria-label="Фото 11"><img src="img/hod-rabot/hod-12.jpg" loading="lazy" alt=""><span class="gallery-thumb-progress"></span></button>
+      </div>
+    </div>
+  </section>
+
   <!-- LOCATION -->
   <section id="a-location">
     <div class="section-head reveal" style="margin-bottom:clamp(32px,4vw,52px);">
@@ -740,6 +826,7 @@
       <nav class="footer-nav">
         <a href="#a-arch">Архитектура</a>
         <a href="#a-specs">Характеристики</a>
+        <a href="#a-progress">Ход работ</a>
         <a href="#a-location">Локация</a>
         <a href="#a-deal">Сделка</a>
       </nav>
@@ -820,6 +907,60 @@
   if(leadForm){
     leadForm.addEventListener('submit', function(e){ e.preventDefault(); });
   }
+
+  document.querySelectorAll('[data-gallery]').forEach(function(root){
+    var slides = root.querySelectorAll('.gallery-slide');
+    var thumbs = root.querySelectorAll('.gallery-thumb');
+    var counterCur = root.querySelector('.gallery-counter-current');
+    var prevBtn = root.querySelector('.gallery-prev');
+    var nextBtn = root.querySelector('.gallery-next');
+    var stage = root.querySelector('.gallery-stage');
+    var total = slides.length;
+    var index = 0;
+    var AUTOPLAY_MS = 4800;
+    var timer = null;
+
+    function show(i){
+      index = (i + total) % total;
+      slides.forEach(function(s, si){ s.classList.toggle('is-active', si === index); });
+      thumbs.forEach(function(t, ti){ t.classList.toggle('is-active', ti === index); });
+      if(counterCur){ counterCur.textContent = String(index + 1).padStart(2, '0'); }
+      thumbs.forEach(function(t){
+        var p = t.querySelector('.gallery-thumb-progress');
+        if(p){ p.style.animation = 'none'; p.style.width = '0%'; }
+      });
+      var activeProgress = root.querySelector('.gallery-thumb.is-active .gallery-thumb-progress');
+      if(activeProgress){
+        void activeProgress.offsetWidth;
+        activeProgress.style.animation = 'galleryProgress ' + AUTOPLAY_MS + 'ms linear forwards';
+      }
+    }
+    function next(){ show(index + 1); restart(); }
+    function prev(){ show(index - 1); restart(); }
+    function restart(){
+      if(timer){ clearInterval(timer); }
+      timer = setInterval(function(){ show(index + 1); }, AUTOPLAY_MS);
+    }
+    if(prevBtn){ prevBtn.addEventListener('click', prev); }
+    if(nextBtn){ nextBtn.addEventListener('click', next); }
+    thumbs.forEach(function(t, ti){
+      t.addEventListener('click', function(){ show(ti); restart(); });
+    });
+    root.addEventListener('mouseenter', function(){ if(timer){ clearInterval(timer); } });
+    root.addEventListener('mouseleave', restart);
+    if(stage){
+      var startX = null;
+      stage.addEventListener('touchstart', function(e){ startX = e.touches[0].clientX; }, {passive:true});
+      stage.addEventListener('touchend', function(e){
+        if(startX === null){ return; }
+        var dx = e.changedTouches[0].clientX - startX;
+        if(Math.abs(dx) > 40){ dx < 0 ? next() : prev(); }
+        startX = null;
+      }, {passive:true});
+    }
+    show(0);
+    restart();
+  });
 
   var revealEls = document.querySelectorAll('.reveal');
   if('IntersectionObserver' in window){
